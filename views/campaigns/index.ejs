@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Campaigns</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url('/images/backgroundViewCampaign.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+        .campaign-card {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        footer {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+}
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/dashboard">CharityHub</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="text-center">Active Fundraising Campaigns</h2>
+
+    <div class="row mt-4">
+        <% campaigns.forEach(campaign => { %>
+            <div class="col-md-6">
+                <div class="campaign-card p-4">
+                    <h4><%= campaign.title %></h4>
+                    <p>Goal: $<%= campaign.goal_amount %></p>
+                    <a href="/campaigns/<%= campaign.id %>" class="btn btn-primary">View Campaign</a>
+
+                    <% if (user && user.role === "admin") { %>
+                        <a href="/campaigns/<%= campaign.id %>/edit" class="btn btn-warning">Edit</a>
+                        <form action="/campaigns/<%= campaign.id %>/delete" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+
+    
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

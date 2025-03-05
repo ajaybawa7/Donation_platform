@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate and Make a Difference</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background: url('/images/background.jpg') no-repeat center center/cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            flex: 1;
+        }
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 100px 20px;
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        .btn-register {
+            background-color: #f8b400;
+            color: white;
+            font-weight: bold;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            text-transform: uppercase;
+        }
+        .btn-register:hover {
+            background-color: #d69600;
+        }
+        .footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">CharityHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/campaigns">View Campaigns</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/auth/login">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-register" href="/auth/register">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Make a Difference with Your Donation</h1>
+        <p>Your small contribution can bring a huge impact to those in need.</p>
+        <a href="/campaigns" class="btn btn-light btn-lg mt-3">View Campaigns</a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 CharityHub. All Rights Reserved by Ajay Singh.</p>
+    </footer>
+
+</body>
+</html>

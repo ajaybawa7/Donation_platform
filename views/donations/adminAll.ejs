@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Donations - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url('/images/bg-donations.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 50px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        footer {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+}
+        .table-container {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/dashboard">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container text-white">
+    <h2 class="text-center mb-4">All Donations</h2>
+
+    <!-- Filter Form -->
+    <form action="/donations/admin/all" method="GET" class="row g-3 mb-4">
+        <div class="col-md-5">
+            <label for="campaign_id" class="form-label">Filter by Campaign ID</label>
+            <input type="text" class="form-control" name="campaign_id" id="campaign_id" placeholder="Enter campaign ID">
+        </div>
+
+    
+
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </form>
+
+    <!-- Donations Table -->
+    <div class="table-container">
+        <table class="table table-dark table-striped table-hover text-center">
+            <thead>
+                <tr>
+                    <th>Donor Name</th>
+                    <th>Campaign</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (donations.length > 0) { %>
+                    <% donations.forEach(donation => { %>
+                        <tr>
+                            <td><%= donation.donor_name %></td>
+                            <td><%= donation.campaign_name %></td>
+                            <td>$<%= donation.amount %></td>
+                            <td><%= donation.donation_date %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No donations found.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/dashboard" class="btn btn-light">Back to Dashboard</a>
+    </div>
+</div>
+<br><br><br><br>
+
+<footer class="footer">
+    <p>&copy; 2025 CharityHub by AJAY SINGH. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

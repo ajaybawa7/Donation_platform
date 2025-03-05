@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign Details</title>
+    <style>
+        /* 🌟 General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: url('/images/campaign-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            width: 450px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            color: #333;
+        }
+        strong {
+            color: #444;
+        }
+
+        /* 🎯 Campaign Stats */
+        .goal, .collected {
+            font-size: 18px;
+            font-weight: bold;
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .goal { background: #28a745; color: white; }
+        .collected { background: #17a2b8; color: white; }
+
+        /* 🚀 Buttons */
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            margin: 5px;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover { background: #0056b3; }
+        .btn-warning {
+            background: #ffc107;
+            color: black;
+            border: none;
+        }
+        .btn-warning:hover { background: #e0a800; }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+        }
+        .btn-danger:hover { background: #c82333; }
+        .btn-dashboard {
+            background: #343a40;
+            color: white;
+            border: none;
+        }
+        .btn-dashboard:hover { background: #23272b; }
+
+        /* 🗑️ Delete Form */
+        form {
+            display: inline;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2><%= campaign.title %></h2>
+    <p><%= campaign.description %></p>
+    
+    <p><strong>🎯 Goal:</strong> <span class="goal">$<%= campaign.goal_amount %></span></p>
+    <p><strong>💰 Collected:</strong> <span class="collected">$<%= campaign.collected_amount %></span></p>
+
+    <!-- 🚀 Donate Button -->
+    <a href="/donations/<%= campaign.id %>/donate" class="btn btn-primary">Donate Now</a>
+
+    <!-- 🛠 Admin Controls -->
+    <% if (user && user.role === "admin") { %>
+        <a href="/campaigns/<%= campaign.id %>/edit" class="btn btn-warning">Edit</a>
+        
+        <form action="/campaigns/<%= campaign.id %>/delete" method="POST">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+        </form>
+    <% } %>
+
+    <!-- 🔙 Back to Dashboard -->
+    <a href="/dashboard" class="btn btn-dashboard">View Dashboard</a>
+</div>
+
+</body>
+</html>

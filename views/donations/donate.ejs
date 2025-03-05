@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate to <%= campaign.title %></title>
+    <style>
+        /* 🌟 General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: url('/images/donation-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            width: 450px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            color: #333;
+        }
+        strong {
+            color: #444;
+        }
+
+        /* 🎯 Campaign Stats */
+        .goal, .collected {
+            font-size: 18px;
+            font-weight: bold;
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .goal { background: #28a745; color: white; }
+        .collected { background: #17a2b8; color: white; }
+
+        /* 🚀 Donation Form */
+        form {
+            margin-top: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            margin: 5px;
+            border: none;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover { background: #0056b3; }
+
+        /* 🎉 Goal Reached Message */
+        .goal-reached {
+            color: green;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* 🏦 PayPal Section */
+        .paypal-container {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 🔙 Back to Campaign */
+        .btn-dashboard {
+            background: #343a40;
+            color: white;
+        }
+        .btn-dashboard:hover { background: #23272b; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Donate to <%= campaign.title %></h2>
+    <p><%= campaign.description %></p>
+
+    <p><strong>🎯 Goal:</strong> <span class="goal">$<%= campaign.goal_amount %></span></p>
+    <p><strong>💰 Collected:</strong> <span class="collected">$<%= campaign.collected_amount || 0 %></span></p>
+
+    <% let remainingAmount = campaign.goal_amount - (campaign.collected_amount || 0); %>
+
+    <% if (remainingAmount <= 0) { %>
+        <p class="goal-reached">🎉 This campaign has reached its goal! Thank you for your generous support.</p>
+    <% } else { %>
+        <!-- 🚀 Standard Donation Form -->
+        <form action="/donations/<%= campaign.id %>/donate" method="POST">
+            <label for="amount">Enter Donation Amount ($):</label>
+            <input type="number" id="amount" name="amount" min="1" max="<%= remainingAmount %>" required>
+            <button type="submit" class="btn btn-primary">Donate</button>
+        </form>
+
+        <!-- 🏦 PayPal Section -->
+        <div class="paypal-container">
+            <p><strong>Donate using PayPal</strong></p>
+            <div id="paypal-button-container"></div>
+        </div>
+
+        <!-- 🛠 PayPal Integration -->
+        <script src="https://www.paypal.com/sdk/js?client-id=<%= process.env.PAYPAL_CLIENT_ID %>&currency=USD"></script>
+        <script>
+            const remainingAmount = <%= JSON.stringify(remainingAmount || 0) %>; 
+
+            paypal.Buttons({
+                createOrder: (data, actions) => {
+                    const amountInput = document.getElementById("amount");
+                    const amount = parseFloat(amountInput.value);
+
+                    if (!amount || amount <= 0) {
+                        alert("Please enter a valid donation amount.");
+                        return;
+                    }
+                    if (amount > remainingAmount) {
+                        alert("You can only donate up to $" + remainingAmount + " to reach the goal.");
+                        return;
+                    }
+
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: amount.toFixed(2) 
+                            }
+                        }]
+                    });
+                },
+                onApprove: (data, actions) => {
+                    return actions.order.capture().then(details => {
+                        fetch("/donations/<%= campaign.id %>/paypal-donate", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                orderID: data.orderID,
+                                amount: details.purchase_units[0].amount.value
+                            })
+                        }).then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                alert("Donation successful! Thank you.");
+                                window.location.reload();
+                            } else {
+                                alert("Donation failed. Please try again.");
+                            }
+                        });
+                    });
+                },
+                onError: (err) => {
+                    console.error("PayPal Error:", err);
+                    alert("An error occurred with PayPal. Please try again.");
+                }
+            }).render("#paypal-button-container");
+        </script>
+    <% } %>
+
+    <!-- 🔙 Back to Campaign -->
+    <div class="text-center mt-4">
+        <a href="/campaigns/<%= campaign.id %>" class="btn btn-dashboard">Back to Campaign</a>
+    </div>
+
+    <% if (error) { %>
+        <p style="color: red;"><%= error %></p>
+    <% } %>
+</div>
+
+</body>
+</html>
